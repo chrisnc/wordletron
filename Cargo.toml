@@ -1,8 +1,13 @@
 [package]
 name = "wordletron"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A solver for Wordle"
 license = "Apache-2.0"
 
 [dependencies]
+custom_derive = "0.1.7"
+indicatif = { version = "0.16.2", features = ["rayon"] }
+newtype_derive = "0.1.6"
+rand = "0.8.4"
+rayon = "1.5.1"
