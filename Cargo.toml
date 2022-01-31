@@ -2,7 +2,7 @@
 name = "wordletron"
 version = "0.1.4"
 edition = "2021"
-description = "A solver for Wordle"
+description = "A solver for and command-line version of Wordle"
 license = "Apache-2.0"
 repository = "https://github.com/chrisnc/wordletron"
 readme = "README.md"
