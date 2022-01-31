@@ -98,8 +98,8 @@ pub fn compute_clue(answer: &Word, guess: &Word) -> Clue {
     let mut clue = Clue::from([Black; N]);
 
     /*
-     * Emit a green clue for each matching letter and delete the letter from the guess and answer
-     * vectors so they can't be used for other clues.
+     * Emit a green clue for each matching letter and mark the letter in the guess and answer so
+     * they can't be used for other clues.
      */
     for (pos, (gc, ac)) in g
         .iter_mut()
@@ -114,8 +114,8 @@ pub fn compute_clue(answer: &Word, guess: &Word) -> Clue {
 
     /*
      * For each unmarked guess letter, find the first position of that letter in the answer, emit a
-     * yellow clue, and mark both the guess and answer letter so they can't be used for other
-     * clues.
+     * yellow clue, and mark the answer letter so it can't be used for other clues. (No need to
+     * mark the guess letters since we won't visit them again.)
      */
     for (pos, gc) in g.iter().enumerate().filter(|&(_, gc)| *gc != 0) {
         if let Some(ac) = a.iter_mut().find(|ac| *gc == **ac) {
