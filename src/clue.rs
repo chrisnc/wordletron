@@ -42,13 +42,7 @@ impl Clue {
 
 impl From<&Clue> for String {
     fn from(clue: &Clue) -> Self {
-        clue.0
-            .iter()
-            .map(|c| {
-                let s: &str = c.into();
-                s
-            })
-            .collect()
+        clue.0.iter().map(<&str>::from).collect()
     }
 }
 

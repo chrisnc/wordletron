@@ -1,5 +1,6 @@
 use std::io::{self, stdin, stdout, Write};
 
+use itertools::join;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 mod word;
@@ -11,12 +12,7 @@ pub use clue::*;
 pub const N: usize = 5;
 
 fn word_vec_from_str(s: &str) -> Vec<Word> {
-    s.lines()
-        .filter_map(|l| {
-            let w: Word = l.try_into().ok()?;
-            Some(w)
-        })
-        .collect()
+    s.lines().filter_map(|l| l.try_into().ok()).collect()
 }
 
 pub fn load_words() -> (Vec<Word>, Vec<Word>) {
@@ -53,13 +49,7 @@ pub fn get_clue() -> io::Result<Clue> {
 }
 
 pub fn print_sequence(seq: &Vec<Word>) {
-    println!(
-        "{}",
-        seq.iter()
-            .map(String::from)
-            .collect::<Vec<String>>()
-            .join(", ")
-    );
+    println!("{}", join(seq, ", "));
 }
 
 pub fn is_candidate(clue: &Clue, guess: &Word, word: &Word) -> bool {
@@ -111,31 +101,28 @@ pub fn compute_clue(answer: &Word, guess: &Word) -> Clue {
      * Emit a green clue for each matching letter and delete the letter from the guess and answer
      * vectors so they can't be used for other clues.
      */
-    g.iter_mut()
+    for (pos, (gc, ac)) in g
+        .iter_mut()
         .zip(a.iter_mut())
         .enumerate()
-        .for_each(|(pos, (ac, gc))| {
-            if *ac == *gc {
-                clue[pos] = Green;
-                *ac = 0;
-                *gc = 0;
-            }
-        });
+        .filter(|(_, (gc, ac))| *gc == *ac)
+    {
+        clue[pos] = Green;
+        *gc = 0;
+        *ac = 0;
+    }
 
     /*
      * For each unmarked guess letter, find the first position of that letter in the answer, emit a
      * yellow clue, and mark both the guess and answer letter so they can't be used for other
      * clues.
      */
-    g.iter_mut().enumerate().for_each(|(pos, gc)| {
-        if *gc != 0 {
-            a.iter_mut().find(|c| **c == *gc).map(|ac| {
-                clue[pos] = Yellow;
-                *gc = 0;
-                *ac = 0;
-            });
+    for (pos, gc) in g.iter().enumerate().filter(|&(_, gc)| *gc != 0) {
+        if let Some(ac) = a.iter_mut().find(|ac| *gc == **ac) {
+            clue[pos] = Yellow;
+            *ac = 0;
         }
-    });
+    }
 
     /*
      * The remaining elements of clue remain Black.
@@ -144,7 +131,7 @@ pub fn compute_clue(answer: &Word, guess: &Word) -> Clue {
     clue
 }
 
-pub fn find_best_guesses(answers: &Vec<Word>, guesses: &Vec<Word>) -> Vec<Word> {
+pub fn find_best_guesses(answers: &[Word], guesses: &[Word]) -> Vec<Word> {
     let mut guess_scores: Vec<(Word, usize)> = guesses
         .par_iter()
         .cloned()
@@ -169,6 +156,7 @@ pub fn find_best_guesses(answers: &Vec<Word>, guesses: &Vec<Word>) -> Vec<Word> 
     guess_scores.sort_by_key(|&(_, s)| s);
 
     if let Some((_, best_score)) = guess_scores.first() {
+        // Need to drop best_score reference before calling .retain.
         let best_score = best_score.clone();
         guess_scores.retain(|(_, s)| *s == best_score);
     }

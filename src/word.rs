@@ -26,7 +26,7 @@ impl TryFrom<&[u8]> for Word {
     type Error = TryFromSliceError;
 
     fn try_from(s: &[u8]) -> Result<Self, Self::Error> {
-        Ok(Word(s.try_into()?))
+        s.try_into().map(Word)
     }
 }
 
@@ -34,7 +34,7 @@ impl TryFrom<&str> for Word {
     type Error = TryFromSliceError;
 
     fn try_from(s: &str) -> Result<Self, Self::Error> {
-        Ok(Word(s.as_bytes().try_into()?))
+        Word::try_from(s.as_bytes())
     }
 }
 

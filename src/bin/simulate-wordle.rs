@@ -1,4 +1,4 @@
-use rayon::iter::{ParallelIterator, IntoParallelRefIterator};
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 use wordletron::*;
 

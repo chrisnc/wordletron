@@ -1,6 +1,6 @@
+use rand::prelude::*;
 use std::io;
 use wordletron::*;
-use rand::prelude::*;
 
 fn main() -> io::Result<()> {
     let (mut answers, guesses) = load_words();
