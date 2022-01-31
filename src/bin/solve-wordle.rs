@@ -2,7 +2,7 @@ use std::io;
 use wordletron::*;
 
 fn main() -> io::Result<()> {
-    let (mut answers, mut guesses) = load_words();
+    let (mut answers, guesses) = load_words();
     let mut sequence: Vec<Word> = Vec::new();
     let mut guess = Word([0; N]);
 
@@ -27,7 +27,6 @@ fn main() -> io::Result<()> {
             }
         }
         answers.retain(|a| is_candidate(&clue, &guess, a));
-        guesses.retain(|a| is_candidate(&clue, &guess, a));
         println!("answers remaining: {}", answers.len());
         print_sequence(&answers);
         sequence.push(guess);
