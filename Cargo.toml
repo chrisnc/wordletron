@@ -1,9 +1,11 @@
 [package]
 name = "wordletron"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 description = "A solver for Wordle"
 license = "Apache-2.0"
+repository = "https://github.com/chrisnc/wordletron"
+readme = "README.md"
 
 [dependencies]
 custom_derive = "0.1.7"
