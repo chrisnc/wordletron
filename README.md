@@ -6,9 +6,10 @@ using the same strategy the interactive solver uses.
 
 The solver is not very sophisticated; it just suggests guesses that minimize
 the maximum number of answers that would remain after making a given guess,
-over all answers that are still possible with the clues so far. If any of the
-guesses that are best by this criterion are also in the set of remaining
-answers, it will suggest only these.
+over all answers that are still possible with the clues so far. If there is a
+tie, it will then choose words that minimize the average number of answers that
+would remain. If any of the guesses that are best by these criteria are also in
+the set of remaining answers, it will suggest only these.
 
 ### Installing
 

@@ -1,6 +1,6 @@
 [package]
 name = "wordletron"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Chris Copeland <chris@chrisnc.net>"]
 description = "A solver for and command-line version of Wordle"
 edition = "2021"

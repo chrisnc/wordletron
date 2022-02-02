@@ -132,13 +132,12 @@ pub fn compute_clue(answer: &Word, guess: &Word) -> Clue {
 }
 
 pub fn find_best_guesses(answers: &[Word], guesses: &[Word]) -> Vec<Word> {
-    let mut guess_scores: Vec<(Word, usize)> = guesses
+    let mut guess_scores: Vec<(Word, (usize, usize))> = guesses
         .par_iter()
         .cloned()
         .map(|g| {
-            (
-                g,
-                answers
+            (g, {
+                let answer_counts: Vec<usize> = answers
                     .par_iter()
                     .map(|a| {
                         let clue = compute_clue(a, &g);
@@ -147,9 +146,12 @@ pub fn find_best_guesses(answers: &[Word], guesses: &[Word]) -> Vec<Word> {
                             .filter(|w| is_candidate(&clue, &g, w))
                             .count()
                     })
-                    .max()
-                    .expect("no answers left"),
-            )
+                    .collect();
+                (
+                    answer_counts.iter().cloned().max().expect("no answers left"),
+                    answer_counts.iter().cloned().sum(),
+                )
+            })
         })
         .collect();
 
