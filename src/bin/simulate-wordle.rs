@@ -4,7 +4,7 @@ use wordletron::*;
 
 fn main() {
     let (answers, guesses) = load_words();
-    let start = Word::try_from("raise").unwrap();
+    let start = Word::try_from("roast").unwrap();
 
     answers.par_iter().for_each(|a| {
         let mut guess = start.clone();

@@ -3,11 +3,16 @@ use std::io::{self, stdin, stdout, Write};
 use itertools::join;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
+use std::collections::BTreeSet;
+
 mod word;
 pub use word::*;
 
 mod clue;
 pub use clue::*;
+
+mod play;
+pub use play::play_wordle;
 
 pub const N: usize = 5;
 
@@ -132,26 +137,18 @@ pub fn compute_clue(answer: &Word, guess: &Word) -> Clue {
 }
 
 pub fn find_best_guesses(answers: &[Word], guesses: &[Word]) -> Vec<Word> {
-    let mut guess_scores: Vec<(Word, (usize, usize))> = guesses
+    let mut guess_scores: Vec<(Word, isize)> = guesses
         .par_iter()
         .cloned()
         .map(|g| {
-            (g, {
-                let answer_counts: Vec<usize> = answers
+            (
+                g,
+                -(answers
                     .par_iter()
-                    .map(|a| {
-                        let clue = compute_clue(a, &g);
-                        answers
-                            .par_iter()
-                            .filter(|w| is_candidate(&clue, &g, w))
-                            .count()
-                    })
-                    .collect();
-                (
-                    answer_counts.iter().cloned().max().expect("no answers left"),
-                    answer_counts.iter().cloned().sum(),
-                )
-            })
+                    .map(|a| compute_clue(a, &g))
+                    .collect::<BTreeSet<Clue>>()
+                    .len() as isize),
+            )
         })
         .collect();
 

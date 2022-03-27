@@ -38,6 +38,14 @@ impl TryFrom<&str> for Word {
     }
 }
 
+impl TryFrom<String> for Word {
+    type Error = TryFromSliceError;
+
+    fn try_from(s: String) -> Result<Self, Self::Error> {
+        Word::try_from(s.as_bytes())
+    }
+}
+
 impl From<&Word> for String {
     fn from(w: &Word) -> Self {
         String::from_utf8_lossy(&w.0).to_string()
