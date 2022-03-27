@@ -4,11 +4,17 @@ use std::io;
 use super::*;
 
 pub fn play_wordle(answer: Option<Word>) -> io::Result<()> {
-    let (mut answers, guesses) = load_words();
+    let (mut answers, mut guesses) = load_words();
     let mut guess: Word;
     let mut sequence: Vec<Word> = Vec::new();
 
-    let answer = answer.unwrap_or(answers.choose(&mut rand::thread_rng()).unwrap().clone());
+    let answer = answer.unwrap_or_else(|| answers.choose(&mut rand::thread_rng()).unwrap().clone());
+
+    if !guesses.contains(&answer) {
+        // For user-specified answers...
+        answers.push(answer.clone());
+        guesses.push(answer.clone());
+    }
 
     let mut letters = String::from("abcdefghijklmnopqrstuvwxyz");
 
