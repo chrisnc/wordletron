@@ -5,6 +5,11 @@ use rpassword::prompt_password;
 use wordletron::*;
 
 fn main() -> io::Result<()> {
-    let solution = prompt_password("solution: ")?;
-    play_wordle(Word::try_from(solution).ok())
+    play_wordle(Some(loop {
+        if let Ok(solution) = Word::try_from(prompt_password("solution: ")?) {
+            break solution;
+        } else {
+            println!("solution must be 5 letters");
+        }
+    }))
 }
